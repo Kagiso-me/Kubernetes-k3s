@@ -1,18 +1,4 @@
-# Storage
-<br>
-
-There are various storage options for our storage needs:
-
-### Options:
-<ul>Rook + Ceph </ul>
-<ul>Longhorn – Native Kubernetes storage. Recommended as the best viable solution. </ul>
-<ul>GlusterFS + Heketi </ul>
-
-<ul>NFS – Works well. You can create claims and manage it from Kubernetes. However, this is not clustered, and this single point of failure turns it against the exercise we are trying to do here. Secondly, very much limited to your network / connection </ul>
-
-<br>
-
-## Longhorn
+# Longhorn
 <br>
 <p><strong>Longhorn</strong> is a lightweight, reliable, and powerful distributed <a href=https://cloudacademy.com/blog/object-storage-block-storage/>block storage</a> system for Kubernetes.</p>
 <p>Longhorn implements distributed block storage using containers and microservices. Longhorn creates a dedicated storage controller for each block device volume and synchronously replicates the volume across multiple replicas stored on multiple nodes. The storage controller and replicas are themselves orchestrated using Kubernetes.</p>
