@@ -6,7 +6,6 @@ metadata:
 spec:
   destination:
     namespace: default
-    name: kind
   project: default
   sources:
     # Chart from Chart Repo
