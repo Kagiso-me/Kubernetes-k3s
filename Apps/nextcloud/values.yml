@@ -1,0 +1,217 @@
+---
+image:
+  repository: nextcloud
+  tag: 27.0.2
+  pullPolicy: IfNotPresent
+nameOverride: ""
+fullnameOverride: ""
+podAnnotations: {}
+deploymentAnnotations: {}
+replicaCount: 1
+ingress:
+  enabled: false
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 4G
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: clusterissuer-prod
+    nginx.ingress.kubernetes.io/server-snippet: ""
+  tls:
+    - secretName: nextcloud-tls
+      hosts:
+        - hostname.me
+  labels: {}
+  path: /
+  pathType: Prefix
+lifecycle: {}
+phpClientHttpsFix:
+  enabled: false
+  protocol: https
+nextcloud:
+  host: hostname.me
+  username: ""
+  password: ""
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-secret
+    username: nextcloud-username
+    password: nextcloud-password
+  update: 0
+  datadir: /var/www/html/data
+  persistence:
+    subPath: null
+  mail:
+    enabled: false
+    fromAddress: user
+    domain: domain.com
+    smtp:
+      host: domain.com
+      secure: ssl
+      port: 465
+      authtype: LOGIN
+      name: user
+      password: pass
+  phpConfigs: {}
+  defaultConfigs:
+    .htaccess: true
+    redis.config.php: true
+    apache-pretty-urls.config.php: true
+    apcu.config.php: true
+    apps.config.php: true
+    autoconfig.php: true
+    smtp.config.php: true
+  configs:
+    proxy.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_proxies' => array(
+          0 => '127.0.0.1',
+          1 => '10.0.0.0/8',
+          2 => 'c.me',
+          3 => 'me',
+        ),
+        'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+      );
+  strategy:
+    type: Recreate
+  extraEnv: null
+  extraInitContainers: []
+  extraSidecarContainers: []
+nginx:
+  enabled: false
+  image:
+    repository: nginx
+    tag: alpine
+    pullPolicy: IfNotPresent
+  config:
+    default: true
+  resources: {}
+internalDatabase:
+  enabled: false
+  name: next_cloud_db1
+externalDatabase:
+  enabled: true
+  type: mysql
+  host: 10.0.1.130
+  user: kagiso
+  password: 
+  database: nextcloud
+  existingSecret:
+    enabled: true
+    secretName: mariadb-secret
+    usernameKey: mariadb-root-username
+    passwordKey: mariadb-root-password
+mariadb:
+  enabled: false
+  auth:
+    database: database
+    username: user
+    password: password
+  architecture: standalone
+  primary:
+    persistence:
+      enabled: true
+      accessMode: ReadWriteMany
+      size: 4Gi
+postgresql:
+  enabled: false
+  global:
+    postgresql:
+      auth:
+        username: nextcloud
+        password: changeme
+        database: nextcloud
+  primary:
+    persistence:
+      enabled: false
+redis:
+  enabled: false
+  auth:
+    enabled: true
+    password: changeme
+cronjob:
+  enabled: false
+  lifecycle: {}
+service:
+  type: LoadBalancer
+  port: 8080
+  loadBalancerIP:
+  nodePort: 
+persistence:
+  enabled: true
+  annotations: {}
+  storageClass: longhorn
+  accessMode: ReadWriteMany
+  size: 50Gi
+  nextcloudData:
+    enabled: false
+    subPath: null
+    annotations: {}
+    accessMode: ReadWriteMany
+    size: 8Gi
+resources:
+  limits:
+    cpu: 800m
+    memory: 600Mi
+  requests:
+    cpu: 250m
+    memory: 200Mi
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 140
+  periodSeconds: 60
+  timeoutSeconds: 20
+  failureThreshold: 3
+  successThreshold: 1
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 140
+  periodSeconds: 60
+  timeoutSeconds: 20
+  failureThreshold: 3
+  successThreshold: 1
+startupProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 60
+  timeoutSeconds: 20
+  failureThreshold: 30
+  successThreshold: 1
+hpa:
+  enabled: false
+  cputhreshold: 60
+  minPods: 1
+  maxPods: 10
+nodeSelector: {}
+tolerations: []
+affinity: {}
+metrics:
+  enabled: false
+  replicaCount: 1
+  https: false
+  token: ""
+  timeout: 5s
+  tlsSkipVerify: false
+  image:
+    repository: xperimental/nextcloud-exporter
+    tag: 0.6.1
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9205"
+    labels: {}
+  serviceMonitor:
+    enabled: false
+    namespace: ""
+    jobLabel: ""
+    interval: 30s
+    scrapeTimeout: ""
+    labels: {}
+rbac:
+  enabled: false
+  serviceaccount:
+    create: true
+    name: nextcloud-serviceaccount
+    annotations: {}
