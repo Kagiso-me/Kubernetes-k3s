@@ -668,7 +668,7 @@ mysql:
 externalDatabase:
   ## @param externalDatabase.host External Database server host
   ##
-  host: 10.0.1.123
+  host: 10.0.1.130
   ## @param externalDatabase.port External Database server port
   ##
   port: 3306
