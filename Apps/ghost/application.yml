@@ -10,8 +10,8 @@ spec:
   sources:
     # Chart from Chart Repo
     - chart: ghost
-      repoURL: oci://registry-1.docker.io/bitnamicharts
-      targetRevision: 5.63.0
+      repoURL: https://charts.bitnami.com/bitnami
+      targetRevision: 19.5.6
       helm:
         # https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/#helm-value-files-from-external-git-repository
         valueFiles:
