@@ -1053,7 +1053,7 @@ externalDatabase:
   user: ""
   database: ""
   password: ""
-  existingSecret: "keycloak-secret"
+  existingSecret: "keycloak-creds"
   existingSecretHostKey: ""
   existingSecretPortKey: ""
   existingSecretUserKey: "database-user"
