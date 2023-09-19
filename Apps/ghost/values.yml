@@ -107,7 +107,7 @@ ghostPassword: ""
 ## NOTE: Must contain key `ghost-password`
 ## NOTE: When it's set, the `ghostPassword` parameter is ignored
 ##
-existingSecret: "ghost"
+existingSecret: "ghost-secret"
 ## @param ghostEmail Ghost user email
 ##
 ghostEmail: ktjeane@outlook.com

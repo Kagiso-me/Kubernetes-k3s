@@ -45,12 +45,12 @@ workload:
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                name: wg-easy
-                key: password
+                name: wg-easy-secret
+                key: PASSWORD
             - name: WG_HOST
               valueFrom:
                 secretKeyRef:
-                name: wg-easy
+                name: wg-easy-secret
                 key: WG_HOST           
               PORT: "{{ .Values.service.main.ports.main.port }}"
               WG_PORT: "{{ .Values.service.vpn.ports.vpn.port }}"
