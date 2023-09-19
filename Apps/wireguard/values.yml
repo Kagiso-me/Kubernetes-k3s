@@ -42,16 +42,8 @@ workload:
             startup:
               type: tcp
           env:
-            - name: PASSWORD
-              valueFrom:
-                secretKeyRef:
-                name: wg-easy-secret
-                key: PASSWORD
-            - name: WG_HOST
-              valueFrom:
-                secretKeyRef:
-                name: wg-easy-secret
-                key: WG_HOST           
+              PASSWORD: password
+              WG_HOST: host.com   
               PORT: "{{ .Values.service.main.ports.main.port }}"
               WG_PORT: "{{ .Values.service.vpn.ports.vpn.port }}"
               WG_MTU: 0
