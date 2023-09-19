@@ -31,7 +31,7 @@ architecture: standalone
 auth:
   rootPassword: ""
   database: my_database
-  username: "kagiso"
+  username: ""
   password: ""
   replicationUser: replicator
   replicationPassword: ""
