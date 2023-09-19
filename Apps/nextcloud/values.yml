@@ -33,7 +33,7 @@ nextcloud:
   password: ""
   existingSecret:
     enabled: true
-    secretName: nextcloud-secret
+    secretName: nextcloud-creds
     username: nextcloud-username
     password: nextcloud-password
   update: 0
@@ -98,9 +98,9 @@ externalDatabase:
   database: nextcloud
   existingSecret:
     enabled: true
-    secretName: mariadb-secret
-    usernameKey: mariadb-root-username
-    passwordKey: mariadb-root-password
+    secretName: mariadb-creds
+    usernameKey: mariadb-username
+    passwordKey: mariadb-password
 mariadb:
   enabled: false
   auth:
