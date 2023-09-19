@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+  project: default
+  sources:
+    # Chart from Chart Repo
+    - chart: keycloak
+      repoURL: https://charts.bitnami.com/bitnami
+      targetRevision: 16.1.5
+      helm:
+        # https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/#helm-value-files-from-external-git-repository
+        valueFiles:
+        - $values/Apps/keycloak/values.yml
+    # Values from Git
+    - repoURL: 'https://github.com/Kagiso-me/Kubernetes-k3s/'
+      targetRevision: HEAD
+      ref: values
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
