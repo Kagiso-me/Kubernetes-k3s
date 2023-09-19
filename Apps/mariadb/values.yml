@@ -35,7 +35,7 @@ auth:
   password: ""
   replicationUser: replicator
   replicationPassword: ""
-  existingSecret: mariadb-secret
+  existingSecret: mariadb-creds
   forcePassword: false
   usePasswordFiles: false
   customPasswordFiles: {}
@@ -110,7 +110,7 @@ primary:
       cpu: 200m
       memory: 200Mi
     requests:
-      cpu: 128m
+      cpu: 100m
       memory: 100Mi
   startupProbe:
     enabled: false
