@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "suyashsonawane.vscode-datree",
-        "lunuan.kubernetes-templates"
+        "lunuan.kubernetes-templates",
+        "ms-kubernetes-tools.vscode-kubernetes-tools"
     ]
 }
