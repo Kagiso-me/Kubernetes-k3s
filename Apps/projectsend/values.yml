@@ -33,11 +33,7 @@ workload:
                 expandObjectName: false
                 name: '{{ printf "%s-%s" .Release.Name "mariadbcreds" }}'
                 key: mariadb-password
-            DBHOST:
-              secretKeyRef:
-                expandObjectName: false
-                name: '{{ printf "%s-%s" .Release.Name "mariadbcreds" }}'
-                key: plainhost
+            DBHOST: 10.0.1.130
           command:
             - /bin/sh
             - -c
@@ -80,14 +76,22 @@ persistence:
     enabled: true
     mountPath: "/config"
     targetSelectAll: true
+    size: 5Gi
+    storageClass: longhorn
+    accessModes:
+      - ReadWriteMany
   data:
     enabled: true
     mountPath: "/data"
+    size: 15Gi
+    storageClass: longhorn
+    accessModes:
+      - ReadWriteMany
   varrun:
     enabled: true
 
 mariadb:
-  enabled: true
+  enabled: false
   mariadbUsername: projectsend
   mariadbDatabase: projectsend
 

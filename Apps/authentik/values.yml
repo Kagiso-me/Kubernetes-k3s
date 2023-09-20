@@ -1,162 +1,252 @@
-# Default values for code-server.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# -- Server replicas
+replicas: 1
+# -- Custom priority class for different treatment by the scheduler
+priorityClassName:
+# -- server securityContext
+securityContext: {}
+# -- server containerSecurityContext
+containerSecurityContext: {}
 
-replicaCount: 1
-password: cloud1688
+worker:
+  # -- worker replicas
+  replicas: 1
+  # -- Custom priority class for different treatment by the scheduler
+  priorityClassName:
+  # -- worker securityContext
+  securityContext: {}
+  # -- server containerSecurityContext
+  containerSecurityContext: {}
 
 image:
-  repository: registry.cn-beijing.aliyuncs.com/kubegemsapp/code-server
-  tag: '3.12.0'
+  repository: ghcr.io/goauthentik/server
+  tag: 2023.8.3
+  # -- optional container image digest
+  digest: ""
   pullPolicy: IfNotPresent
+  pullSecrets: []
 
-imagePullSecrets: []
-nameOverride: "code"
-fullnameOverride: "code"
-hostnameOverride: "vscode"
+# -- Specify any initContainers here as dictionary items. Each initContainer should have its own key. The dictionary item key will determine the order. Helm templates can be used
+initContainers: {}
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: false
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-service:
-  type: LoadBalancer
-  port: 8080
+# -- Specify any additional containers here as dictionary items. Each additional container should have its own key. Helm templates can be used.
+additionalContainers: {}
 
 ingress:
   enabled: false
-  #annotations:
-  #  kubernetes.io/ingress.class: nginx
-  #  kubernetes.io/tls-acme: "true"
-  #hosts:
-  #  - host: code-server.example.loc
-  #    paths:
-  #      - /
+  ingressClassName: ""
+  annotations: {}
+  labels: {}
+  hosts:
+    - host: authentik.domain.tld
+      paths:
+        - path: "/"
+          pathType: Prefix
+  tls: []
 
-  #tls:
-  #  - secretName: code-server
-  #    hosts:
-  #      - code-server.example.loc
+# -- Annotations to add to the server and worker deployments
+annotations: {}
 
-# Optional additional arguments
-extraArgs: []
-  # These are the arguments normally passed to code-server; run
-  # code-server --help for a list of available options.
-  #
-  # Each argument and parameter must have its own entry; if you use
-  # --param value on the command line, then enter it here as:
-  #
-  # - --param
-  # - value
-  #
-  # If you receive an error like "Unknown option --param value", it may be
-  # because both the parameter and value are specified as a single argument,
-  # rather than two separate arguments (e.g. "- --param value" on a line).
+# -- Annotations to add to the server and worker pods
+podAnnotations: {}
 
-# Optional additional environment variables
-extraVars: []
-#  - name: DISABLE_TELEMETRY
-#    value: true
+authentik:
+  # -- Log level for server and worker
+  log_level: info
+  # -- Secret key used for cookie singing and unique user IDs,
+  # don't change this after the first install
+  secret_key: ""
+  # -- Path for the geoip database. If the file doesn't exist, GeoIP features are disabled.
+  geoip: /geoip/GeoLite2-City.mmdb
+  email:
+    # -- SMTP Server emails are sent from, fully optional
+    host: ""
+    port: 587
+    # -- SMTP credentials, when left empty, not authentication will be done
+    username: ""
+    # -- SMTP credentials, when left empty, not authentication will be done
+    password: ""
+    # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
+    use_tls: false
+    # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
+    use_ssl: false
+    # -- Connection timeout
+    timeout: 30
+    # -- Email from address, can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
+    from: ""
+  outposts:
+    # -- Template used for managed outposts. The following placeholders can be used
+    # %(type)s - the type of the outpost
+    # %(version)s - version of your authentik install
+    # %(build_hash)s - only for beta versions, the build hash of the image
+    container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
+  error_reporting:
+    # -- This sends anonymous usage-data, stack traces on errors and
+    # performance data to sentry.beryju.org, and is fully opt-in
+    enabled: false
+    # -- This is a string that is sent to sentry with your error reports
+    environment: "k8s"
+    # -- Send PII (Personally identifiable information) data to sentry
+    send_pii: false
+  postgresql:
+    # -- set the postgresql hostname to talk to
+    # if unset and .Values.postgresql.enabled == true, will generate the default
+    # @default -- `{{ .Release.Name }}-postgresql`
+    host: "{{ .Release.Name }}-postgresql"
+    # -- postgresql Database name
+    # @default -- `authentik`
+    name: "authentik"
+    # -- postgresql Username
+    # @default -- `authentik`
+    user: "authentik"
+    password: ""
+    port: 5432
+  redis:
+    # -- set the redis hostname to talk to
+    # @default -- `{{ .Release.Name }}-redis-master`
+    host: "{{ .Release.Name }}-redis-master"
+    password: ""
 
-##
-## Init containers parameters:
-## volumePermissions: Change the owner of the persist volume mountpoint to RunAsUser:fsGroup
-##
-volumePermissions:
+# -- List of config maps to mount blueprints from. Only keys in the
+# configmap ending with ".yaml" wil be discovered and applied
+blueprints: []
+
+# -- see configuration options at https://goauthentik.io/docs/installation/configuration/
+env: {}
+# AUTHENTIK_VAR_NAME: VALUE
+
+envFrom: []
+#  - configMapRef:
+#      name: special-config
+
+envValueFrom: {}
+#  AUTHENTIK_VAR_NAME:
+#    secretKeyRef:
+#      key: password
+#      name: my-secret
+
+service:
+  # -- Service that is created to access authentik
   enabled: true
-  securityContext:
-    runAsUser: 0
+  type: ClusterIP
+  port: 80
+  name: http
+  protocol: TCP
+  labels: {}
+  annotations: {}
 
-## Pod Security Context
-## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-##
-securityContext:
-  enabled: true
-  fsGroup: 1000
-  runAsUser: 1000
+volumes: []
 
-resources:
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  limits:
-    cpu: 200m
-    memory: 200Mi 
-  requests:
-   cpu: 100m
-   memory: 128Mi 
+volumeMounts: []
 
-nodeSelector: {}
-
-tolerations: []
-
+# -- affinity applied to the deployments
 affinity: {}
 
-## Persist data to a persistent volume
-persistence:
+#  -- tolerations applied to the deployments
+tolerations: []
+
+# -- nodeSelector applied to the deployments
+nodeSelector: {}
+
+resources:
+  server: {}
+  worker: {}
+
+autoscaling:
+  server:
+    # -- Create a HPA for the server deployment
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 50
+  worker:
+    # -- Create a HPA for the worker deployment
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+
+livenessProbe:
+  # -- enables or disables the livenessProbe
   enabled: true
-  ## code-server data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  storageClass: "longhorn"
-  accessMode: ReadWriteMany
-  size: 5Gi
+  httpGet:
+    # -- liveness probe url path
+    path: /-/health/live/
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+startupProbe:
+  # -- enables or disables the livenessProbe
+  enabled: true
+  httpGet:
+    # -- liveness probe url path
+    path: /-/health/live/
+    port: http
+  failureThreshold: 60
+  periodSeconds: 5
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /-/health/ready/
+    port: http
+  periodSeconds: 10
+
+serviceAccount:
+  # -- Service account is needed for managed outposts
+  create: true
   annotations: {}
-  # existingClaim: ""
-  # hostPath: /data
+  serviceAccountSecret:
+    # -- As we use the authentik-remote-cluster chart as subchart, and that chart
+    # creates a service account secret by default which we don't need here, disable its creation
+    enabled: false
+  fullnameOverride: authentik
+  nameOverride: authentik
 
-## Enable an Specify container in extraContainers.
-## This is meant to allow adding code-server dependencies, like docker-dind.
-extraContainers: |
-#- name: docker-dind
-#  image: docker:19.03-dind
-#  imagePullPolicy: IfNotPresent
-#  resources:
-#    requests:
-#      cpu: 250m
-#      memory: 256M
-#  securityContext:
-#    privileged: true
-#    procMount: Default
-#  env:
-#  - name: DOCKER_TLS_CERTDIR
-#    value: ""
-#  - name: DOCKER_DRIVER
-#    value: "overlay2"
+prometheus:
+  serviceMonitor:
+    create: false
+    interval: 30s
+    scrapeTimeout: 3s
+    # -- labels additional on ServiceMonitor
+    labels: {}
+  rules:
+    create: false
+    # -- labels additional on PrometheusRule
+    labels: {}
 
-## Additional code-server secret mounts
-extraSecretMounts: []
-  # - name: secret-files
-  #   mountPath: /etc/secrets
-  #   secretName: code-server-secret-files
-  #   readOnly: true
-
-## Additional code-server volume mounts
-extraVolumeMounts: []
-  # - name: extra-volume
-  #   mountPath: /mnt/volume
-  #   readOnly: true
-  #   existingClaim: volume-claim
-  #   hostPath: ""
-
-extraConfigmapMounts: []
-  # - name: certs-configmap
-  #   mountPath: /etc/code-server/ssl/
-  #   subPath: certificates.crt # (optional)
-  #   configMap: certs-configmap
-  #   readOnly: true
+geoip:
+  # -- optional GeoIP, deploys a cronjob to download the maxmind database
+  enabled: false
+  # -- sign up under https://www.maxmind.com/en/geolite2/signup
+  accountId: ""
+  # -- sign up under https://www.maxmind.com/en/geolite2/signup
+  licenseKey: ""
+  editionIds: "GeoLite2-City"
+  image: maxmindinc/geoipupdate:v4.8
+  # -- number of hours between update runs
+  updateInterval: 8
+  # -- server containerSecurityContext
+  containerSecurityContext: {}
+postgresql:
+  # -- enable the bundled bitnami postgresql chart
+  enabled: false
+  postgresqlMaxConnections: 500
+  postgresqlUsername: "authentik"
+  # postgresqlPassword: ""
+  postgresqlDatabase: "authentik"
+  # persistence:
+  #   enabled: true
+  #   storageClass:
+  #   accessModes:
+  #     - ReadWriteOnce
+  image:
+    tag: 15.4.0-debian-11-r0
+redis:
+  # -- enable the bundled bitnami redis chart
+  enabled: false
+  architecture: standalone
+  auth:
+    enabled: false
+  image:
+    tag: 6.2.10-debian-11-r13
