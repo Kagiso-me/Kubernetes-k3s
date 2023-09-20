@@ -91,7 +91,7 @@ env:
   - name: ENABLE_CRON_GC
     value: 1
   - name: MYSQL_HOST
-    value: mysql
+    value: 10.0.1.1
   - name: MYSQL_PORT
     value: 3306
   - name: MYSQL_ROOT_USER
