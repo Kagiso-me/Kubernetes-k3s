@@ -1,7 +1,7 @@
 image:
   repository: tccr.io/truecharts/wg-easy
   pullPolicy: IfNotPresent
-  tag: wg-easy@sha256:5cc96ad86c87fb2ebc7dab65fc5b190ff0dcce370d0b9afa4aa4b5b2580a5000
+  tag: latest@sha256:5cc96ad86c87fb2ebc7dab65fc5b190ff0dcce370d0b9afa4aa4b5b2580a5000
 
 securityContext:
   container:
