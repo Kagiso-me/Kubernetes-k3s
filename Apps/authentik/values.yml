@@ -82,11 +82,11 @@ authentik:
   error_reporting:
     # -- This sends anonymous usage-data, stack traces on errors and
     # performance data to sentry.beryju.org, and is fully opt-in
-    enabled: false
+    enabled: true
     # -- This is a string that is sent to sentry with your error reports
     environment: "k3s"
     # -- Send PII (Personally identifiable information) data to sentry
-    send_pii: false
+    send_pii: true
   postgresql:
     # -- set the postgresql hostname to talk to
     # if unset and .Values.postgresql.enabled == true, will generate the default
@@ -183,7 +183,7 @@ startupProbe:
     path: /-/health/live/
     port: http
   failureThreshold: 60
-  periodSeconds: 5
+  periodSeconds: 10
 
 readinessProbe:
   enabled: true
