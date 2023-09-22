@@ -91,7 +91,7 @@ authentik:
     # -- set the postgresql hostname to talk to
     # if unset and .Values.postgresql.enabled == true, will generate the default
     # @default -- `{{ .Release.Name }}-postgresql`
-    host: "{{ .Release.Name }}-postgresql"
+    host: 10.0.1.129
     # -- postgresql Database name
     # @default -- `authentik`
     name: "authentik"
@@ -230,7 +230,7 @@ geoip:
   containerSecurityContext: {}
 postgresql:
   # -- enable the bundled bitnami postgresql chart
-  enabled: true
+  enabled: false
   postgresqlMaxConnections: 500
   postgresqlUsername: "authentik"
   postgresqlPassword: "password"
@@ -244,7 +244,7 @@ postgresql:
     tag: 15.4.0-debian-11-r0
 redis:
   # -- enable the bundled bitnami redis chart
-  enabled: false
+  enabled: true
   architecture: standalone
   auth:
     enabled: false
