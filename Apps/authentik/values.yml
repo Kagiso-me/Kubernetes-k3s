@@ -62,9 +62,9 @@ authentik:
     host: "smtp-mail.outlook.com"
     port: 587
     # -- SMTP credentials, when left empty, not authentication will be done
-    username: "username"
+    username: ""
     # -- SMTP credentials, when left empty, not authentication will be done
-    password: "password"
+    password: ""
     # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
     use_tls: true
     # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
@@ -72,7 +72,7 @@ authentik:
     # -- Connection timeout
     timeout: 30
     # -- Email from address, can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
-    from: "Kagiso.me"
+    from: ""
   outposts:
     # -- Template used for managed outposts. The following placeholders can be used
     # %(type)s - the type of the outpost
@@ -97,7 +97,7 @@ authentik:
     name: "authentik"
     # -- postgresql Username
     # @default -- `authentik`
-    user: "username"
+    user: "authentik"
     password: "password"
     port: 5432
   redis:
@@ -223,7 +223,7 @@ geoip:
   # -- sign up under https://www.maxmind.com/en/geolite2/signup
   licenseKey: ""
   editionIds: "GeoLite2-City"
-  image: maxmindinc/geoipupdate:v6.0
+  image: maxmindinc/geoipupdate:v4.8
   # -- number of hours between update runs
   updateInterval: 8
   # -- server containerSecurityContext
@@ -232,8 +232,8 @@ postgresql:
   # -- enable the bundled bitnami postgresql chart
   enabled: true
   postgresqlMaxConnections: 500
-  postgresqlUsername: "user"
-  # postgresqlPassword: ""
+  postgresqlUsername: "authentik"
+  postgresqlPassword: "password"
   postgresqlDatabase: "authentik"
   # persistence:
   #   enabled: true
