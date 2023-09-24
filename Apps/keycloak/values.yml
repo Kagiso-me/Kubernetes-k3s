@@ -124,7 +124,7 @@ auth:
   adminPassword: ""
   ## @param auth.existingSecret Existing secret containing Keycloak admin password
   ##
-  existingSecret: "keycloak-secret"
+  existingSecret: "keycloak-creds"
   ## @param auth.passwordSecretKey Key where the Keycloak admin password is being stored inside the existing secret.
   ##
   passwordSecretKey: "adminPassword"
@@ -300,11 +300,11 @@ containerSecurityContext:
 ##
 resources:
   limits:
-    cpu: 150m
-    memory: 150Mi
+    cpu: 350m
+    memory: 350Mi
   requests:
-    cpu: 100m
-    memory: 100Mi
+    cpu: 200m
+    memory: 200Mi
 ## Configure extra options for Keycloak containers' liveness, readiness and startup probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
 ## @param livenessProbe.enabled Enable livenessProbe on Keycloak containers
@@ -512,7 +512,7 @@ service:
   ## @param service.loadBalancerIP loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
   ## ref: https://kubernetes.io/docs/user-guide/services/#type-loadbalancer
   ##
-  loadBalancerIP: "10.0.1.129"
+  loadBalancerIP: ""
   ## @param service.loadBalancerSourceRanges Address that are allowed when service is LoadBalancer
   ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
   ## Example:
@@ -1053,12 +1053,12 @@ externalDatabase:
   user: ""
   database: ""
   password: ""
-  existingSecret: "keycloak-creds"
-  existingSecretHostKey: ""
-  existingSecretPortKey: ""
-  existingSecretUserKey: "database-user"
-  existingSecretDatabaseKey: "database-name"
-  existingSecretPasswordKey: "database-password"
+  existingSecret: "mariadb-creds"
+  existingSecretHostKey: "host"
+  existingSecretPortKey: "port"
+  existingSecretUserKey: "mariadb-username"
+  existingSecretDatabaseKey: "keycloak-database-name"
+  existingSecretPasswordKey: "mariadb-password"
 
 ## @section Keycloak Cache parameters
 
