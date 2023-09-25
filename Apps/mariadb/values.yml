@@ -107,11 +107,11 @@ primary:
     allowPrivilegeEscalation: false
   resources:
     limits:
-      cpu: 200m
+      cpu: 160m
       memory: 200Mi
     requests:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 60m
+      memory: 128Mi
   startupProbe:
     enabled: false
     initialDelaySeconds: 120
