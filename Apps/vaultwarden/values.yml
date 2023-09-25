@@ -18,7 +18,7 @@ workload:
         main:
           env:
             DOMAIN: "https://{{ if .Values.ingress }}{{ if .Values.ingress.main.enabled }}{{ ( index .Values.ingress.main.hosts 0 ).host }}{{ else }}placeholder.com{{ end }}{{ else }}placeholder.com{{ end }}"
-            DATABASE_URL: "mysql://kagiso:wgPe_U99*y)p`T@10.0.1.130:3306"
+            DATABASE_URL: "mysql://user:pass@host:port"
           envFrom:
             - configMapRef:
                 name: vaultwardenconfig
@@ -33,7 +33,7 @@ database:
   # disabled for other databases. https://github.com/dani-garcia/bitwarden_rs/wiki/Running-without-WAL-enabled
   wal: true
   ## URL for external databases (mysql://user:pass@host:port or postgresql://user:pass@host:port).
-  url: "mysql://kagiso:wgPe_U99*y)p`T@10.0.1.130:3306"
+  url: "mysql://user:pass@host:port"
   ## Set the size of the database connection pool.
   # maxConnections: 10
   ## Connection retries during startup, 0 for infinite. 1 second between retries.
