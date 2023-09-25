@@ -26,7 +26,7 @@ podSecurityContext: {}
 securityContext: {}
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
 
 ingress:
@@ -50,8 +50,8 @@ resources:
     cpu: "150m"
     memory: "500Mi"
   limits:
-    memory: "2500Mi"
-    cpu: "1000m"
+    memory: "1000Mi"
+    cpu: "800m"
 
 autoscaling:
   enabled: false
@@ -69,13 +69,13 @@ affinity: {}
 persistence:
   enabled: true
   annotations: {}
-  # storageClass: "-"
+  storageClass: "longhorn"
 
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  accessMode: ReadWriteOnce
-  size: 8Gi
+  accessMode: ReadWriteMany
+  size: 75Gi
 
 env:
   - name: SERVER_NAME
