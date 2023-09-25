@@ -18,11 +18,7 @@ workload:
         main:
           env:
             DOMAIN: "https://{{ if .Values.ingress }}{{ if .Values.ingress.main.enabled }}{{ ( index .Values.ingress.main.hosts 0 ).host }}{{ else }}placeholder.com{{ end }}{{ else }}placeholder.com{{ end }}"
-            DATABASE_URL:
-              secretKeyRef:
-                name: cnpg-main-urls
-                key: std
-
+            DATABASE_URL: "mysql://kagiso:wgPe_U99*y)p`T@10.0.1.130:3306"
           envFrom:
             - configMapRef:
                 name: vaultwardenconfig
