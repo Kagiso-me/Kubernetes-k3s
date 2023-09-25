@@ -19,9 +19,9 @@ imagePullSecrets: []
 # @default -- See below
 env:
   # -- Set the container timezone
-  TIME_ZONE: Etc/UTC
+  TIME_ZONE: Etc/UTC+2
   # -- The hostname of your database
-  DB_HOST: "{{ printf \"%s-mysql\" (.Release.Name) }}"
+  DB_HOST: 10.0.1.130
   # -- The root password for mysql (used for initial setup)
   DB_ROOT_PASSWD: "{{ .Values.mariadb.auth.rootPassword }}"
   # -- The initial admin user's email
@@ -50,7 +50,7 @@ ingress:
 #    For more options see [mariadb chart documentation](https://github.com/bitnami/charts/tree/master/bitnami/mariadb)
 # @default -- See values.yaml
 mariadb:
-  enabled: true
+  enabled: false
   architecture: standalone
   auth:
     database: seafile
@@ -64,16 +64,19 @@ mariadb:
 
 persistence:
   data:
-    enabled: false
+    enabled: true
     mountPath: /shared
+    size: 100Gi
+    accessMode: ReadWriteMany
+
 
 memcached:
   enabled: true
 
 elasticsearch:
-  enabled: false
+  enabled: true
   master:
-    masterOnly: false
+    masterOnly: true
     replicaCount: 1
   data:
     replicaCount: 0
