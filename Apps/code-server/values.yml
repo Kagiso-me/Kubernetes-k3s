@@ -1,0 +1,130 @@
+# Default values for code-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: linuxserver/code-server
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  enabled: true
+  admin:
+    # -- If set to true, will give admin rights to the cluster where code-server is running. Enable it only if you know what you are doing and your instance is protected by password / oauth
+    enabled: false
+    # -- Pre existing admin role name. Normally you would have admin, cluster-admin, edit, and view  out of box
+    roleName: cluster-admin
+
+
+podAnnotations: {}
+
+deployment:
+  # -- Deployment strategy
+  strategy:
+    type: RollingUpdate
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: LoadBalancer
+  port: 8443
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 200m
+    memory: 250Mi
+  requests:
+    cpu: 80m
+    memory: 160Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# -- environment values
+env:
+  # -- simple key: val based env vars
+  simple:
+    PUID: "1000"
+    PGID: "1000"
+    TZ: Africa/Johannesburg
+
+
+#    foo: bar
+  # -- full envs, they will be rendered as written here. Useful if you need to use secrets/cm
+  full: []
+#    - name: xxx
+#      valueFrom:
+#        configMapKeyRef:
+#          key: "my-config"
+#          name: "secret"
+#          optional: false
+
+annotations:
+  # -- Deployment's annotations
+  deployment: {}
+
+persistence:
+  storageClass: "longhorn"
+  existingClaim: ""
+  enabled: true
+  accessMode: ReadWriteMany
+  size: 5Gi
+  # if you need any additional volumes, you can define them here
+  additionalVolumes: []
+  # if you need any additional volume mounts, you can define them here
+  additionalMounts: []
