@@ -74,9 +74,9 @@ memcached:
   enabled: true
 
 elasticsearch:
-  enabled: true
+  enabled: false
   master:
-    masterOnly: true
+    masterOnly: false
     replicaCount: 1
   data:
     replicaCount: 0
