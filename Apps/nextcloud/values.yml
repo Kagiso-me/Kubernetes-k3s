@@ -41,7 +41,7 @@ nextcloud:
   persistence:
     subPath: null
   mail:
-    enabled: false
+    enabled: true
     fromAddress: user
     domain: domain.com
     smtp:
@@ -87,10 +87,10 @@ nginx:
     default: true
   resources: {}
 internalDatabase:
-  enabled: false
-  name: next_cloud_db1
-externalDatabase:
   enabled: true
+  name: nextcloud_db1
+externalDatabase:
+  enabled: false
   type: mysql
   host: 10.0.1.130
   user: kagiso
@@ -102,9 +102,9 @@ externalDatabase:
     usernameKey: mariadb-username
     passwordKey: mariadb-password
 mariadb:
-  enabled: false
+  enabled: true
   auth:
-    database: database
+    database: nextcloud_db1
     username: user
     password: password
   architecture: standalone
@@ -142,7 +142,7 @@ persistence:
   annotations: {}
   storageClass: longhorn
   accessMode: ReadWriteMany
-  size: 80Gi
+  size: 100Gi
   nextcloudData:
     enabled: false
     subPath: null
@@ -152,10 +152,10 @@ persistence:
 resources:
   limits:
     cpu: 600m
-    memory: 600Mi
+    memory: 750Mi
   requests:
-    cpu: 250m
-    memory: 400Mi
+    cpu: 300m
+    memory: 450Mi
 livenessProbe:
   enabled: true
   initialDelaySeconds: 140
