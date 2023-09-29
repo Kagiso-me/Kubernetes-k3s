@@ -54,17 +54,17 @@ authentik:
   log_level: info
   # -- Secret key used for cookie singing and unique user IDs,
   # don't change this after the first install
-  secret_key: "authentik-creds"
+  secret_key: ""
   # -- Path for the geoip database. If the file doesn't exist, GeoIP features are disabled.
   geoip: /geoip/GeoLite2-City.mmdb
   email:
     # -- SMTP Server emails are sent from, fully optional
-    host: "smtp-mail.outlook.com"
+    host: "email.smtp"
     port: 587
     # -- SMTP credentials, when left empty, not authentication will be done
-    username: ""
+    username: "email"
     # -- SMTP credentials, when left empty, not authentication will be done
-    password: ""
+    password: "password"
     # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
     use_tls: true
     # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
@@ -72,7 +72,7 @@ authentik:
     # -- Connection timeout
     timeout: 30
     # -- Email from address, can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
-    from: ""
+    from: "Kagiso.me"
   outposts:
     # -- Template used for managed outposts. The following placeholders can be used
     # %(type)s - the type of the outpost
@@ -82,16 +82,16 @@ authentik:
   error_reporting:
     # -- This sends anonymous usage-data, stack traces on errors and
     # performance data to sentry.beryju.org, and is fully opt-in
-    enabled: true
+    enabled: false
     # -- This is a string that is sent to sentry with your error reports
-    environment: "k3s"
+    environment: "k8s"
     # -- Send PII (Personally identifiable information) data to sentry
-    send_pii: true
+    send_pii: false
   postgresql:
     # -- set the postgresql hostname to talk to
     # if unset and .Values.postgresql.enabled == true, will generate the default
     # @default -- `{{ .Release.Name }}-postgresql`
-    host: 10.0.1.129
+    host: "{{ .Release.Name }}-postgresql"
     # -- postgresql Database name
     # @default -- `authentik`
     name: "authentik"
@@ -183,7 +183,7 @@ startupProbe:
     path: /-/health/live/
     port: http
   failureThreshold: 60
-  periodSeconds: 10
+  periodSeconds: 5
 
 readinessProbe:
   enabled: true
@@ -223,28 +223,27 @@ geoip:
   # -- sign up under https://www.maxmind.com/en/geolite2/signup
   licenseKey: ""
   editionIds: "GeoLite2-City"
-  image: maxmindinc/geoipupdate:v6.0
+  image: maxmindinc/geoipupdate:v4.8
   # -- number of hours between update runs
   updateInterval: 8
   # -- server containerSecurityContext
   containerSecurityContext: {}
 postgresql:
   # -- enable the bundled bitnami postgresql chart
-  enabled: false
+  enabled: true
   postgresqlMaxConnections: 500
   postgresqlUsername: "authentik"
   postgresqlPassword: "password"
   postgresqlDatabase: "authentik"
-  # persistence:
-  #   enabled: true
-  #   storageClass:
-  #   accessModes:
-  #     - ReadWriteOnce
+  persistence:
+    enabled: true
+    storageClass: longhorn
+    size: 8Gi
   image:
     tag: 15.4.0-debian-11-r0
 redis:
   # -- enable the bundled bitnami redis chart
-  enabled: true
+  enabled: false
   architecture: standalone
   auth:
     enabled: false
