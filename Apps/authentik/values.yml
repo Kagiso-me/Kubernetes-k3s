@@ -32,12 +32,12 @@ initContainers: {}
 additionalContainers: {}
 
 ingress:
-  enabled: true
-  ingressClassName: "nginx"
+  enabled: false
+  ingressClassName: ""
   annotations: {}
   labels: {}
   hosts:
-    - host: auth.hostname.me
+    - host: authentik.domain.tld
       paths:
         - path: "/"
           pathType: Prefix
@@ -54,17 +54,17 @@ authentik:
   log_level: info
   # -- Secret key used for cookie singing and unique user IDs,
   # don't change this after the first install
-  secret_key: "RebPnGzW1MjozgxoNsA87jkiwnA37wAG5AjP0xHX9UAzLfuQqR"
+  secret_key: ""
   # -- Path for the geoip database. If the file doesn't exist, GeoIP features are disabled.
   geoip: /geoip/GeoLite2-City.mmdb
   email:
     # -- SMTP Server emails are sent from, fully optional
-    host: "email.smtp"
+    host: "smtp-mail.outlook.com"
     port: 587
     # -- SMTP credentials, when left empty, not authentication will be done
-    username: "email"
+    username: ""
     # -- SMTP credentials, when left empty, not authentication will be done
-    password: "password"
+    password: ""
     # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
     use_tls: true
     # -- Enable either use_tls or use_ssl, they can't be enabled at the same time.
@@ -72,7 +72,6 @@ authentik:
     # -- Connection timeout
     timeout: 30
     # -- Email from address, can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
-    from: "Kagiso.tech"
   outposts:
     # -- Template used for managed outposts. The following placeholders can be used
     # %(type)s - the type of the outpost
@@ -91,14 +90,14 @@ authentik:
     # -- set the postgresql hostname to talk to
     # if unset and .Values.postgresql.enabled == true, will generate the default
     # @default -- `{{ .Release.Name }}-postgresql`
-    host: "{{ .Release.Name }}-postgresql"
+    host: "10.0.1.10"
     # -- postgresql Database name
     # @default -- `authentik`
     name: "authentik"
     # -- postgresql Username
     # @default -- `authentik`
-    user: "authentik"
-    password: "password"
+    user: "user"
+    password: "pass"
     port: 5432
   redis:
     # -- set the redis hostname to talk to
@@ -223,22 +222,23 @@ geoip:
   # -- sign up under https://www.maxmind.com/en/geolite2/signup
   licenseKey: ""
   editionIds: "GeoLite2-City"
-  image: maxmindinc/geoipupdate:v6.0
+  image: maxmindinc/geoipupdate:v4.8
   # -- number of hours between update runs
   updateInterval: 8
   # -- server containerSecurityContext
   containerSecurityContext: {}
 postgresql:
   # -- enable the bundled bitnami postgresql chart
-  enabled: true
+  enabled: false
   postgresqlMaxConnections: 500
   postgresqlUsername: "authentik"
-  postgresqlPassword: "password"
+  # postgresqlPassword: ""
   postgresqlDatabase: "authentik"
-  persistence:
-    enabled: true
-    storageClass: longhorn
-    size: 8Gi
+  # persistence:
+  #   enabled: true
+  #   storageClass:
+  #   accessModes:
+  #     - ReadWriteOnce
   image:
     tag: 15.4.0-debian-11-r0
 redis:

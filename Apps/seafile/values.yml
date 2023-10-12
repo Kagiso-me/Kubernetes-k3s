@@ -21,7 +21,7 @@ env:
   # -- Set the container timezone
   TIME_ZONE: Etc/UTC+2
   # -- The hostname of your database
-  DB_HOST: 10.0.1.130
+  DB_HOST: 10.0.1.10
   # -- The root password for mysql (used for initial setup)
   DB_ROOT_PASSWD: "{{ .Values.mariadb.auth.rootPassword }}"
   # -- The initial admin user's email

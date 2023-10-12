@@ -9,12 +9,12 @@ podAnnotations: {}
 deploymentAnnotations: {}
 replicaCount: 1
 ingress:
-  enabled: true
+  enabled: false
   className: nginx
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 4G
     kubernetes.io/tls-acme: "true"
-    cert-manager.io/cluster-issuer: clusterissuer-prod
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/server-snippet: ""
   tls:
     - secretName: nextcloud-tls
@@ -28,29 +28,29 @@ phpClientHttpsFix:
   enabled: false
   protocol: https
 nextcloud:
-  host: hostname.me
-  username: ""
-  password: ""
+  host: host
+  username: "user"
+  password: "password"
   existingSecret:
     enabled: true
-    secretName: nextcloud-creds
+    secretName: nextcloud
     username: nextcloud-username
     password: nextcloud-password
   update: 0
   datadir: /var/www/html/data
   persistence:
-    subPath: null
+    subPath: 
   mail:
     enabled: true
-    fromAddress: user
-    domain: domain.com
+    fromAddress: "Kagiso.tech"
+    domain: ""
     smtp:
-      host: domain.com
+      host: "smtp-mail.outlook.com"
       secure: ssl
       port: 465
       authtype: LOGIN
-      name: user
-      password: pass
+      name: ""
+      password: ""
   phpConfigs: {}
   defaultConfigs:
     .htaccess: true
@@ -67,8 +67,8 @@ nextcloud:
         'trusted_proxies' => array(
           0 => '127.0.0.1',
           1 => '10.0.0.0/8',
-          2 => 'c.me',
-          3 => 'me',
+          2 => 'kagiso.tech',
+          3 => '',
         ),
         'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
       );
@@ -87,32 +87,32 @@ nginx:
     default: true
   resources: {}
 internalDatabase:
-  enabled: true
-  name: nextcloud_db1
-externalDatabase:
   enabled: false
+  name: "nextcloud"
+externalDatabase:
+  enabled: true
   type: mysql
-  host: 10.0.1.130
-  user: kagiso
-  password: 
-  database: nextcloud
+  host: 10.0.1.10
+  user: ""
+  password: ""
+  database: ""
   existingSecret:
     enabled: true
-    secretName: mariadb-creds
+    secretName: nextcloud-db
     usernameKey: mariadb-username
     passwordKey: mariadb-password
 mariadb:
-  enabled: true
+  enabled: false
   auth:
-    database: nextcloud_db1
-    username: user
-    password: password
+    database: "nextcloud"
+    username: "user"
+    password: "password"
   architecture: standalone
   primary:
     persistence:
       enabled: true
       accessMode: ReadWriteMany
-      size: 4Gi
+      size: 6Gi
 postgresql:
   enabled: false
   global:
@@ -151,28 +151,28 @@ persistence:
     size: 8Gi
 resources:
   limits:
-    cpu: 600m
-    memory: 750Mi
+    cpu: 620m
+    memory: 850Mi
   requests:
-    cpu: 300m
-    memory: 450Mi
+    cpu: 360m
+    memory: 500Mi
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 140
+  initialDelaySeconds: 120
   periodSeconds: 60
   timeoutSeconds: 20
   failureThreshold: 3
   successThreshold: 1
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 140
+  initialDelaySeconds: 120
   periodSeconds: 60
   timeoutSeconds: 20
   failureThreshold: 3
   successThreshold: 1
 startupProbe:
   enabled: false
-  initialDelaySeconds: 30
+  initialDelaySeconds: 120
   periodSeconds: 60
   timeoutSeconds: 20
   failureThreshold: 30
