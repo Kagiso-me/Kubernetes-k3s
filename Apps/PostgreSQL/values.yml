@@ -145,7 +145,11 @@ auth:
   replicationPassword: ""
   ## @param auth.existingSecret Name of existing secret to use for PostgreSQL credentials. `auth.postgresPassword`, `auth.password`, and `auth.replicationPassword` will be ignored and picked up from this secret. The secret might also contains the key `ldap-password` if LDAP is enabled. `ldap.bind_password` will be ignored and picked from this secret in this case.
   ##
+<<<<<<< HEAD
   existingSecret: "postgresql-creds"
+=======
+  existingSecret: ""
+>>>>>>> 0fd210691f56139a4602f3215bb79a625b97e43b
   ## @param auth.secretKeys.adminPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
   ## @param auth.secretKeys.userPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
   ## @param auth.secretKeys.replicationPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
@@ -595,7 +599,11 @@ primary:
   service:
     ## @param primary.service.type Kubernetes Service type
     ##
+<<<<<<< HEAD
     type: LoadBalancer
+=======
+    type: ClusterIP
+>>>>>>> 0fd210691f56139a4602f3215bb79a625b97e43b
     ## @param primary.service.ports.postgresql PostgreSQL service port
     ##
     ports:
@@ -619,7 +627,11 @@ primary:
     ## Set the LoadBalancer service type to internal only
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
+<<<<<<< HEAD
     loadBalancerIP: "10.0.1.130"
+=======
+    loadBalancerIP: ""
+>>>>>>> 0fd210691f56139a4602f3215bb79a625b97e43b
     ## @param primary.service.externalTrafficPolicy Enable client source IP preservation
     ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
     ##
@@ -679,7 +691,11 @@ primary:
     ## @param primary.persistence.accessModes PVC Access Mode for PostgreSQL volume
     ##
     accessModes:
+<<<<<<< HEAD
       - ReadWriteMany
+=======
+      - ReadWriteOnce
+>>>>>>> 0fd210691f56139a4602f3215bb79a625b97e43b
     ## @param primary.persistence.size PVC Storage Request for PostgreSQL volume
     ##
     size: 8Gi
@@ -704,7 +720,11 @@ primary:
   persistentVolumeClaimRetentionPolicy:
     ## @param primary.persistentVolumeClaimRetentionPolicy.enabled Enable Persistent volume retention policy for Primary Statefulset
     ##
+<<<<<<< HEAD
     enabled: true
+=======
+    enabled: false
+>>>>>>> 0fd210691f56139a4602f3215bb79a625b97e43b
     ## @param primary.persistentVolumeClaimRetentionPolicy.whenScaled Volume retention behavior when the replica count of the StatefulSet is reduced
     ##
     whenScaled: Retain
