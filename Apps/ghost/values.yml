@@ -112,10 +112,10 @@ existingSecret: ""
 ghostEmail: user@example.com
 ## @param ghostBlogTitle Ghost Blog title
 ##
-ghostBlogTitle: User's Blog
+ghostBlogTitle: kagiso.bio
 ## @param ghostHost Ghost host to create application URLs
 ##
-ghostHost: ""
+ghostHost: "kagiso.bio"
 ## @param ghostPath URL sub path where to server the Ghost application
 ##
 ghostPath: /

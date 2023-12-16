@@ -76,7 +76,7 @@ diagnosticMode:
 image:
   registry: docker.io
   repository: bitnami/wordpress
-  tag: 6.3.2-debian-11-r0
+  tag: 6.4.2-debian-11-r4
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -380,10 +380,12 @@ tolerations: []
 ## @param resources.requests.cpu The requested cpu for the WordPress containers
 ##
 resources:
-  limits: {}
-  requests:
+  limits:
     memory: 512Mi
-    cpu: 300m
+    cpu: 350m
+  requests:
+    memory: 128Mi
+    cpu: 120m
 ## Container ports
 ## @param containerPorts.http WordPress HTTP container port
 ## @param containerPorts.https WordPress HTTPS container port
