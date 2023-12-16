@@ -1,88 +1,56 @@
 image:
-  # -- image repository
-  # USE docker.seadrive.org/seafileltd/seafile-pro-mc for pro
-  repository: seafileltd/seafile-mc
-  # -- image tag
-  tag:
-  # -- image pull policy
+  repository: tccr.io/truecharts/seafile
+  tag: v10.0.1@sha256:7cae32631d0b9075d65ef20a671031fd9c4ff28e30dc592d1dc6253f8a325106
   pullPolicy: IfNotPresent
 
-seafile:
-  pro: false
-  admin_email: example@example.com
-  admin_initial_password: adminpassword123
-
-# Required for pro
-imagePullSecrets: []
-
-# -- environment variables. See more environment variables in the [seafile documentation](https://manual.seafile.com/).
-# @default -- See below
-env:
-  # -- Set the container timezone
-  TIME_ZONE: Etc/UTC+2
-  # -- The hostname of your database
-  DB_HOST: 10.0.1.10
-  # -- The root password for mysql (used for initial setup)
-  DB_ROOT_PASSWD: "{{ .Values.mariadb.auth.rootPassword }}"
-  # -- The initial admin user's email
-  SEAFILE_ADMIN_EMAIL: "{{ .Values.seafile.admin_email }}"
-  # -- The initial admin user's password
-  SEAFILE_ADMIN_PASSWORD: "{{ .Values.seafile.admin_initial_password }}"
-  # -- The hostname for the server (set to your ingress hostname)
-  SEAFILE_SERVER_HOSTNAME: "https://{{ if .Values.ingress }}{{ if .Values.ingress.main.enabled }}{{ ( index .Values.ingress.main.hosts 0 ).host }}{{ else }}example.com{{ end }}{{ else }}example.com{{ end }}"
-  SEAFILE_SERVER_LETSENCRYPT: false
-
-# -- Configures service settings for the chart.
-# @default -- See values.yaml
 service:
   main:
     ports:
-      http:
-        port: 80
+      main:
+        port: 13080
+        protocol: http
+        targetPort: 80
 
-ingress:
-  # -- Enable and configure ingress settings for the chart under this key.
-  # @default -- See values.yaml
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+    runAsNonRoot: false
+    runAsUser: 0
+    runAsGroup: 0
+
+workload:
   main:
-    enabled: false
-
-# -- Enable and configure mariadb database subchart under this key.
-#    For more options see [mariadb chart documentation](https://github.com/bitnami/charts/tree/master/bitnami/mariadb)
-# @default -- See values.yaml
-mariadb:
-  enabled: false
-  architecture: standalone
-  auth:
-    database: seafile
-    username: seafile
-    password: seafilepass
-    rootPassword: seafilerootpass
-  primary:
-    persistence:
-      enabled: true
-      # storageClass: ""
+    podSpec:
+      containers:
+        main:
+          env:
+            DB_HOST:
+              secretKeyRef:
+                expandObjectName: false
+                name: '{{ printf "%s-%s" .Release.Name "mariadbcreds" }}'
+                key: plainhost
+            DB_ROOT_PASSWD:
+              secretKeyRef:
+                expandObjectName: false
+                name: '{{ printf "%s-%s" .Release.Name "mariadbcreds" }}'
+                key: mariadb-root-password
+            SEAFILE_SERVER_LETSENCRYPT: false
+            SEAFILE_SERVER_HOSTNAME: "{{ if .Values.ingress }}{{ if .Values.ingress.main.enabled }}{{ ( index .Values.ingress.main.hosts 0 ).host }}{{ else }}placeholder.com{{ end }}{{ else }}placeholder.com{{ end }}"
+            SEAFILE_ADMIN_EMAIL: me@example.com
+            SEAFILE_ADMIN_PASSWORD: a_very_secret_password
+            FORCE_HTTPS_IN_CONF: false
 
 persistence:
-  data:
+  storage:
     enabled: true
-    mountPath: /shared
-    size: 100Gi
-    accessMode: ReadWriteMany
+    mountPath: "/shared/seafile"
+    size: 50Gi
 
-
-memcached:
+mariadb:
   enabled: true
+  mariadbUsername: seafile
+  mariadbDatabase: seafile
 
-elasticsearch:
-  enabled: false
-  master:
-    masterOnly: false
-    replicaCount: 1
-  data:
-    replicaCount: 0
-  coordinating:
-    replicaCount: 0
-  ingest:
-    enabled: false
-  volumePermissions:
+portal:
+  open:
     enabled: true

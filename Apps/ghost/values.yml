@@ -62,9 +62,9 @@ diagnosticMode:
 
 ## Bitnami Ghost image
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
-## @param image.registry Ghost image registry
-## @param image.repository Ghost image repository
-## @param image.tag Ghost image tag (immutable tags are recommended)
+## @param image.registry [default: REGISTRY_NAME] Ghost image registry
+## @param image.repository [default: REPOSITORY_NAME/ghost] Ghost image repository
+## @skip image.tag Ghost image tag (immutable tags are recommended)
 ## @param image.digest Ghost image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
 ## @param image.pullPolicy Ghost image pull policy
 ## @param image.pullSecrets Ghost image pull secrets
@@ -73,7 +73,7 @@ diagnosticMode:
 image:
   registry: docker.io
   repository: bitnami/ghost
-  tag: 5.67.0-debian-11-r0
+  tag: 5.70.1-debian-11-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -98,7 +98,7 @@ image:
 
 ## @param ghostUsername Ghost user name
 ##
-ghostUsername: ""
+ghostUsername: user
 ## @param ghostPassword Ghost user password
 ## Defaults to a random 10-character alphanumeric string if not set
 ##
@@ -107,16 +107,16 @@ ghostPassword: ""
 ## NOTE: Must contain key `ghost-password`
 ## NOTE: When it's set, the `ghostPassword` parameter is ignored
 ##
-existingSecret: "ghost-secret"
+existingSecret: ""
 ## @param ghostEmail Ghost user email
 ##
-ghostEmail: ktjeane@outlook.com
+ghostEmail: user@example.com
 ## @param ghostBlogTitle Ghost Blog title
 ##
-ghostBlogTitle: Kagiso.me
+ghostBlogTitle: User's Blog
 ## @param ghostHost Ghost host to create application URLs
 ##
-ghostHost: "kagiso.me"
+ghostHost: ""
 ## @param ghostPath URL sub path where to server the Ghost application
 ##
 ghostPath: /
@@ -287,12 +287,8 @@ tolerations: []
 ## @param resources.requests The requested resources for the Ghost container
 ##
 resources:
-  limits:
-    cpu: 350m
-    memory: 500Mi
-  requests:
-    cpu: 100m
-    memory: 200Mi
+  limits: {}
+  requests: {}
 ## Container ports
 ## @param containerPorts.http Ghost HTTP container port
 ## @param containerPorts.https Ghost HTTPS container port
@@ -552,14 +548,14 @@ persistence:
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
   ##
-  storageClass: "longhorn"
+  storageClass: ""
   ## @param persistence.annotations Additional custom annotations for the PVC
   ##
   annotations: {}
   ## @param persistence.accessModes [array] Persistent Volume access modes
   ##
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   ## @param persistence.size Persistent Volume size
   ##
   size: 8Gi
@@ -579,9 +575,9 @@ volumePermissions:
   enabled: false
   ## OS Shell + Utility image
   ## ref: https://hub.docker.com/r/bitnami/os-shell/tags/
-  ## @param volumePermissions.image.registry OS Shell + Utility image registry
-  ## @param volumePermissions.image.repository OS Shell + Utility image repository
-  ## @param volumePermissions.image.tag OS Shell + Utility image tag (immutable tags are recommended)
+  ## @param volumePermissions.image.registry [default: REGISTRY_NAME] OS Shell + Utility image registry
+  ## @param volumePermissions.image.repository [default: REPOSITORY_NAME/os-shell] OS Shell + Utility image repository
+  ## @skip volumePermissions.image.tag OS Shell + Utility image tag (immutable tags are recommended)
   ## @param volumePermissions.image.digest OS Shell + Utility image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
   ## @param volumePermissions.image.pullPolicy OS Shell + Utility image pull policy
   ## @param volumePermissions.image.pullSecrets OS Shell + Utility image pull secrets
@@ -589,7 +585,7 @@ volumePermissions:
   image:
     registry: docker.io
     repository: bitnami/os-shell
-    tag: 11-debian-11-r43
+    tag: 11-debian-11-r90
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -627,7 +623,7 @@ mysql:
   ## @param mysql.enabled Deploy a MySQL server to satisfy the applications database requirements
   ## To use an external database set this to false and configure the `externalDatabase.*` parameters
   ##
-  enabled: false
+  enabled: true
   ## @param mysql.architecture MySQL architecture. Allowed values: `standalone` or `replication`
   ##
   architecture: standalone
@@ -660,32 +656,32 @@ mysql:
       enabled: true
       storageClass: ""
       accessModes:
-        - ReadWriteMany
-      size: 6Gi
+        - ReadWriteOnce
+      size: 8Gi
 ## External Database Configuration
 ## All of these values are only used if `mysql.enabled=false`
 ##
 externalDatabase:
   ## @param externalDatabase.host External Database server host
   ##
-  host: 10.0.1.130
+  host: localhost
   ## @param externalDatabase.port External Database server port
   ##
   port: 3306
   ## @param externalDatabase.user External Database username
   ##
-  user: kagiso
+  user: bn_ghost
   ## @param externalDatabase.password External Database user password
   ##
   password: ""
   ## @param externalDatabase.database External Database database name
   ##
-  database: ghost
+  database: bitnami_ghost
   ## @param externalDatabase.existingSecret The name of an existing secret with database credentials
   ## NOTE: Must contain key `mysql-password`
   ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
   ##
-  existingSecret: "ghost-externaldb"
+  existingSecret: ""
   ## @param externalDatabase.ssl External Database ssl
   ##
   ssl: false
