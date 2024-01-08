@@ -1,6 +1,6 @@
 image:
   repository: tccr.io/truecharts/overseerr
-  tag: 12.1.5@sha256:181867e7536a3cbf2025375d181617e173ea98a96273b50b57356a9496b54ea8
+  tag: 12.1.5@sha256:08f7cfa4055238336109979784bea76f66306062424e53e8388a63e7173a46e4
   pullPolicy: IfNotPresent
 service:
   main:
