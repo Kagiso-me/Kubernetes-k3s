@@ -77,8 +77,8 @@ nextcloud:
   password: changeme
   ## Use an existing secret
   existingSecret:
-    enabled: false
-    # secretName: nameofsecret
+    enabled: true
+    secretName: nextcloud-secret
     usernameKey: nextcloud-username
     passwordKey: nextcloud-password
     tokenKey: nextcloud-token
@@ -234,20 +234,20 @@ nginx:
   #   readOnlyRootFilesystem: true
 
 internalDatabase:
-  enabled: true
+  enabled: false
   name: nextcloud
 
 ##
 ## External database configuration
 ##
 externalDatabase:
-  enabled: false
+  enabled: true
 
   ## Supported database engines: mysql or postgresql
-  type: mysql
+  type: postgresql
 
   ## Database host
-  host:
+  host: 1.1.1.1
 
   ## Database user
   user: nextcloud
@@ -260,12 +260,12 @@ externalDatabase:
 
   ## Use a existing secret
   existingSecret:
-    enabled: false
-    # secretName: nameofsecret
+    enabled: true
+    secretName: nextcloud-db-secret
     usernameKey: db-username
     passwordKey: db-password
-    # hostKey: db-hostname-or-ip
-    # databaseKey: db-name
+    hostKey: db-hostname-or-ip
+    databaseKey: db-name
 
 ##
 ## MariaDB chart configuration
@@ -335,9 +335,9 @@ postgresql:
 ##
 
 redis:
-  enabled: false
+  enabled: true
   auth:
-    enabled: true
+    enabled: false
     password: 'changeme'
     # name of an existing secret with Redis® credentials (instead of auth.password), must be created ahead of time
     existingSecret: ""
@@ -369,7 +369,7 @@ cronjob:
   #   readOnlyRootFilesystem: true
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 8080
   loadBalancerIP: ""
   nodePort: nil
@@ -379,7 +379,7 @@ service:
 ##
 persistence:
   # Nextcloud Data (/var/www/html)
-  enabled: false
+  enabled: true
   annotations: {}
   ## nextcloud data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -396,7 +396,7 @@ persistence:
   # existingClaim:
 
   accessMode: ReadWriteOnce
-  size: 8Gi
+  size: 20Gi
 
   ## Use an additional pvc for the data directory rather than a subpath of the default PVC
   ## Useful to store data on a different storageClass (e.g. on slower disks)
