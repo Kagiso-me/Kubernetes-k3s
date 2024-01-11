@@ -29,14 +29,15 @@ global:
     ##
     auth:
       postgresPassword: "password"
-      username: "username"
+      username: "Kagiso"
       password: "password"
       database: "postgres"
-      existingSecret: "postgres-creds"
+      existingSecret: "postgresql-creds"
       secretKeys:
-        adminPasswordKey: ""
-        userPasswordKey: ""
-        replicationPasswordKey: ""
+        adminPasswordKey: "postgres-password"
+        userUsernameKey: "postgres-username"
+        userPasswordKey: "postgres-password"
+        replicationPasswordKey: "replication-password"
     ## @param global.postgresql.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
     ##
     service:
@@ -145,7 +146,7 @@ auth:
   replicationPassword: ""
   ## @param auth.existingSecret Name of existing secret to use for PostgreSQL credentials. `auth.postgresPassword`, `auth.password`, and `auth.replicationPassword` will be ignored and picked up from this secret. The secret might also contains the key `ldap-password` if LDAP is enabled. `ldap.bind_password` will be ignored and picked from this secret in this case.
   ##
-  existingSecret: "postgres-creds"
+  existingSecret: "postgresql-creds"
   ## @param auth.secretKeys.adminPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
   ## @param auth.secretKeys.userPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
   ## @param auth.secretKeys.replicationPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
@@ -448,7 +449,7 @@ primary:
       memory: 256Mi
       cpu: 150m
     requests:
-      memory: 128Mi
+      memory: 150Mi
       cpu: 100m
   ## Pod Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -621,7 +622,7 @@ primary:
     ## Set the LoadBalancer service type to internal only
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
     ##
-    loadBalancerIP: "10.0.1.129"
+    loadBalancerIP: "10.0.1.130"
     ## @param primary.service.externalTrafficPolicy Enable client source IP preservation
     ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
     ##
@@ -684,7 +685,7 @@ primary:
       - ReadWriteOnce
     ## @param primary.persistence.size PVC Storage Request for PostgreSQL volume
     ##
-    size: 8Gi
+    size: 10Gi
     ## @param primary.persistence.annotations Annotations for the PVC
     ##
     annotations: {}
