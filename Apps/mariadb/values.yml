@@ -26,7 +26,7 @@ image:
   digest: ""
   pullPolicy: IfNotPresent
   pullSecrets: []
-  debug: false
+  debug: true
 architecture: standalone
 auth:
   rootPassword: ""
@@ -111,7 +111,7 @@ primary:
       memory: 200Mi
     requests:
       cpu: 60m
-      memory: 128Mi
+      memory: 150Mi
   startupProbe:
     enabled: false
     initialDelaySeconds: 120
@@ -150,7 +150,7 @@ primary:
     annotations: {}
     accessModes:
       - ReadWriteMany
-    size: 8Gi
+    size: 10Gi
     selector: {}
   extraVolumes: []
   extraVolumeMounts: []
@@ -164,7 +164,7 @@ primary:
     nodePorts:
       mysql: ""
     clusterIP: ""
-    loadBalancerIP: "10.0.1.130"
+    loadBalancerIP: "10.0.1.120"
     externalTrafficPolicy: Cluster
     loadBalancerSourceRanges: []
     extraPorts: []
@@ -278,7 +278,7 @@ secondary:
     labels: {}
     annotations: {}
     accessModes:
-      - ReadWriteOnce
+      - ReadWriteMany
     size: 8Gi
     selector: {}
   extraVolumes: []

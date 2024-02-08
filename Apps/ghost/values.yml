@@ -89,7 +89,7 @@ image:
   pullSecrets: []
   ## Enable debug mode
   ##
-  debug: false
+  debug: true
 
 ## @section Ghost Configuration parameters
 ## Ghost settings based on environment variables
@@ -97,7 +97,7 @@ image:
 
 ## @param ghostUsername Ghost user name
 ##
-ghostUsername: user
+ghostUsername: Kagiso
 ## @param ghostPassword Ghost user password
 ## Defaults to a random 10-character alphanumeric string if not set
 ##
@@ -121,7 +121,7 @@ ghostHost: "kagiso.bio"
 ghostPath: /
 ## @param ghostEnableHttps Configure Ghost to build application URLs using https
 ##
-ghostEnableHttps: false
+ghostEnableHttps: true
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/containers/tree/main/bitnami/ghost/#smtp-configuration
 ## @param smtpHost SMTP server host
@@ -131,9 +131,9 @@ ghostEnableHttps: false
 ## @param smtpService SMTP service
 ## @param smtpProtocol SMTP protocol (ssl or tls)
 ##
-smtpHost: ""
-smtpPort: ""
-smtpUser: ""
+smtpHost: "host.com"
+smtpPort: "587"
+smtpUser: "user@email.com"
 smtpPassword: ""
 smtpService: ""
 smtpProtocol: ""
@@ -141,7 +141,7 @@ smtpProtocol: ""
 ## NOTE: Must contain key `smtp-password`
 ## NOTE: When it's set, the `smtpPassword` parameter is ignored
 ##
-smtpExistingSecret: ""
+smtpExistingSecret: "smtp-creds"
 ## @param allowEmptyPassword Allow the container to be started with blank passwords
 ##
 allowEmptyPassword: true
@@ -557,7 +557,7 @@ persistence:
     - ReadWriteOnce
   ## @param persistence.size Persistent Volume size
   ##
-  size: 8Gi
+  size: 10Gi
   ## @param persistence.existingClaim The name of an existing PVC to use for persistence
   ##
   existingClaim: ""
@@ -622,7 +622,7 @@ mysql:
   ## @param mysql.enabled Deploy a MySQL server to satisfy the applications database requirements
   ## To use an external database set this to false and configure the `externalDatabase.*` parameters
   ##
-  enabled: true
+  enabled: false
   ## @param mysql.architecture MySQL architecture. Allowed values: `standalone` or `replication`
   ##
   architecture: standalone
@@ -663,7 +663,7 @@ mysql:
 externalDatabase:
   ## @param externalDatabase.host External Database server host
   ##
-  host: localhost
+  host: 10.0.1.110
   ## @param externalDatabase.port External Database server port
   ##
   port: 3306
@@ -675,12 +675,12 @@ externalDatabase:
   password: ""
   ## @param externalDatabase.database External Database database name
   ##
-  database: bitnami_ghost
+  database: ghost
   ## @param externalDatabase.existingSecret The name of an existing secret with database credentials
   ## NOTE: Must contain key `mysql-password`
   ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
   ##
-  existingSecret: ""
+  existingSecret: "mysql-creds"
   ## @param externalDatabase.ssl External Database ssl
   ##
   ssl: false

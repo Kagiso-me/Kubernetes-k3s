@@ -1,0 +1,259 @@
+# Leantime Helm Chart variables
+
+# Database settings
+internalDatabase:
+  # Run a MariaDB container in pod.
+  enabled: false
+  # Listener port
+  port: 3306
+  image:
+    repository: mariadb
+    pullPolicy: IfNotPresent
+    # 10.4 images affected by a bug that takes DB too long to start (5+ minutes) - https://github.com/docker-library/mariadb/issues/262
+    tag: "10.3.23"
+  # Persistent Volume for internal database. If disabled, data will be lost when pod is destroyed.
+  # Will be mounted on /var/lib/mysql
+  persistence:
+    enabled: true
+    size: 10Gi
+    accessMode: ReadWriteOnce
+    ## Persistent Volume storage class
+    # storageClass: "-"
+    ## Use existing Persistent Volume Claim
+    # existingClaim:
+  # Setup limits if desired
+  resources: {}
+  securityContext: {}
+  # Database username.
+  user: leantime
+  # User password, defaults to random
+  password: ""
+  # Root password, defaults to random
+  rootPassword: ""
+  # Use existing secret for user, user password and root password. Default keys are 'database-root', 'database-user' and 'database-password'.
+  #existingSecret:
+
+externalDatabase:
+  enabled: true
+  host: "10.0.1.110"
+  database: leantime
+  port: 3306
+  user: ""
+  password: ""
+  ## Use existing secret for database credentials. Keys are 'database-user' and 'database-password'.
+  existingSecret: mysql-creds
+
+leantime:
+  ## Site name. Defaults to 'Leantime'
+  name: ""
+  ## Site languange. Defaults to 'en-US'
+  language: ""
+  ## Main color in hex RGB. Defaults to '#1B75BB'
+  primaryColor: ""
+  ## Secondary color in hex RGB. Defaults to '#81B1A8'
+  secondaryColor: ""
+  ## Default site theme
+  defaultTheme: ""
+  ## Keep theme and language from previous user for login screen
+  #keepTheme: true
+  ## Site logo image path. Defaults to '/images/logo.svg'
+  logo: ""
+  ## Site logo image path for printing (must be jpg or png format). Defaults to '/images/logo.jpg'
+  printLogo: ""
+  ## Default Timezone (see list at https://www.php.net/manual/en/timezones.php)
+  defaultTimezone: ""
+  ## Base URL (e.g. https://leantime.domain.tld). Defaults to Ingress/IngressRoute host if enabled.
+  url: "https://project.kagiso.tech"
+  ## Session salt. Defaults to randomly generated.
+  sessionSalt: ""
+  ## Session expiration. Defaults to 8 hours (28800s).
+  #sessionExpiration:
+  ## Allow per-project menu
+  #projectMenu: false
+  ## Enable debug (0 to disable, 1 to enable)
+  #debug: 0
+  ## Use existing secret for session salt. Key is 'session-salt'.
+  #existingSecret:
+
+  s3:
+    enabled: false
+    # S3 endpoint (empty | https://my-minio_host)
+    endpoint: ""
+    # S3 use path style of subdomain style (true ==> https://[endpoint]/[bucket] ; false => https://[bucket].[endpoint])
+    usePathStyleEndpoint: false
+    ## S3 Key (required)
+    key: ""
+    ## S3 Secret (required)
+    secret: ""
+    ## S3 Bucket (required)
+    bucket: ""
+    ## S3 Region (required)
+    region: ""
+    ## S3 sub-folder
+    #folder:
+    ## Use existing secret for S3 key and secret. Keys are 's3-key' and 's3-secret'
+    #existingSecret:
+
+  smtp:
+    enabled: true
+    ## SMTP sender - required.
+    from: "Kagiso"
+    ## SMTP host - required.
+    host: "host-here"
+    ## SMTP username - required unless existing secret is used.
+    user: ""
+    ## SMTP password - required unless existing secret is used.
+    password: ""
+    ## SMTP port
+    #port:
+    ## Force specific security protocol (tls, ssl or starttls).
+    #secureProtocol:
+    ## Enable TLS automatically if supported by server. Enabled by default.
+    #autoTLS: false
+    ## Use existing secret for SMTP username and password. Keys are 'smtp-user' and 'smtp-password'
+    existingSecret: smtp-creds
+
+  ldap:
+    enabled: false
+    ## LDAP host - required.
+    host: ""
+    ## LDAP port
+    #port:
+    ## LDAP user DN (e.g. CN=users,DC=example,DC=com) - required.
+    userDN: ""
+    ## LDAP Directory type (OL for OpenLDAP, AD for Active Directory)
+    #type: ""
+    ## JSON mapping of user fields with LDAP user attributes
+    #keys: ""
+    ## JSON mapping of user role with LDAP group
+    #groupRoles: ""
+    ## Default role number if no mapped group is found
+    #defaultRole: 20
+
+  ## Map of custom environment variables. Use carefully.
+  #extraEnv:
+  #  LEAN_XXX: value
+
+service:
+  type: LoadBalancer
+  port: 80
+  externalTrafficPolicy: Cluster
+  # loadBalancerIP:
+  nodePorts:
+    # Choose NodePorts manually
+    http: ""
+
+# Kubernetes Ingress
+ingress:
+  enabled: false
+  host: ""
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls: []
+  #  - secretName: leantime-tls
+  #    hosts:
+  #      - leantime.local
+
+# Traefik IngressRoute CRD
+ingressRoute:
+  enabled: false
+  # Mandatory to enable IngressRoute
+  host: ""
+  entrypoints:
+    - websecure
+  tls:
+    []
+    #certResolver: letsencrypt
+
+# Enable persistent storage for user files.
+# Subpaths will be mounted: 'userfiles' into /var/www/userfiles, 'public-userfiles' into /var/www/public/userfiles
+persistence:
+  enabled: false
+  size: 10Gi
+  accessMode: ReadWriteOnce
+  ## Persistent Volume storage class
+  # storageClass: "-"
+  ## Use existing Persistent Volume Claim
+  # existingClaim:
+sessionstorage:
+  enabled: false
+  size: 1Gi
+  accessMode: ReadWriteOnce
+  ## Persistent Volume storage class
+  # storageClass: "-"
+  ## Use existing Persistent Volume Claim
+  # existingClaim:
+image:
+  repository: leantime/leantime
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+replicaCount: 1
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Annotations to add to the Deployment
+deploymentAnnotations: {}
+
+# Sidecar containers, add container spec (https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#Container)
+# No templating possible, values need to be hardcoded
+sidecars: []
+#  - name: sidecar
+#    image: sidecarimage:1.2.3
+#    env:
+#      - name: SIDECAR_END
+#        value: "sidecar"
+#    volumeMounts:
+#      - name: leantime
+#        mountPath: /data
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+strategy: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
