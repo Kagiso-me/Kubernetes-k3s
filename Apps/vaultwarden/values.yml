@@ -1,7 +1,7 @@
 image:
   repository: tccr.io/truecharts/vaultwarden
   pullPolicy: IfNotPresent
-  tag: 25.1.7@sha256:1c0a70eac79018988684889ee518835481221edcbc306fff69f8935507fcecd8
+  tag: 25.1.7@sha256:8b162921cef89dd5145ced84379d4853bf154fbffb0c37c040475bf5cebffabe
 manifestManager:
   enabled: true
 service:
